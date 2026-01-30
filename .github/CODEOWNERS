@@ -1,0 +1,31 @@
+# Clean Data Quality - Code Owners
+# These owners will be requested for review when someone opens a PR
+# that modifies code that they own.
+
+# Global owners - will be requested for review on all PRs
+* @clean-data/maintainers
+
+# Core library
+/src/clean/core/ @clean-data/maintainers
+
+# Detection modules
+/src/clean/detection/ @clean-data/detection-team
+
+# Data loaders
+/src/clean/loaders/ @clean-data/loaders-team
+
+# Visualization
+/src/clean/visualization/ @clean-data/viz-team
+
+# Documentation
+/docs/ @clean-data/docs-team
+*.md @clean-data/docs-team
+
+# CI/CD and tooling
+/.github/ @clean-data/maintainers
+/pyproject.toml @clean-data/maintainers
+
+# Tests mirror source structure ownership
+/tests/test_detection/ @clean-data/detection-team
+/tests/test_loaders/ @clean-data/loaders-team
+/tests/test_visualization/ @clean-data/viz-team

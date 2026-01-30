@@ -1,0 +1,65 @@
+version: 2
+
+updates:
+  # Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    groups:
+      # Group dev dependencies together
+      dev-dependencies:
+        patterns:
+          - "pytest*"
+          - "ruff"
+          - "mypy"
+          - "pre-commit"
+          - "*-stubs"
+        update-types:
+          - "minor"
+          - "patch"
+      # Group ML dependencies
+      ml-core:
+        patterns:
+          - "scikit-learn"
+          - "cleanlab"
+          - "numpy"
+          - "pandas"
+        update-types:
+          - "patch"
+      # Group optional dependencies
+      optional-deps:
+        patterns:
+          - "sentence-transformers"
+          - "torch*"
+          - "transformers"
+          - "plotly"
+          - "ipywidgets"
+        update-types:
+          - "minor"
+          - "patch"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
+      - "ci"

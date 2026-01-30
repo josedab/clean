@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://clean-data.github.io/clean
+    about: Check the documentation for usage guides and API reference.
+  - name: Discussions
+    url: https://github.com/clean-data/clean/discussions
+    about: Ask questions and discuss ideas in GitHub Discussions.
