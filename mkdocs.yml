@@ -1,0 +1,167 @@
+site_name: Clean
+site_description: AI-powered data quality platform for ML datasets
+site_url: https://clean-data.github.io/clean
+site_author: Clean Team
+
+repo_name: clean-data/clean
+repo_url: https://github.com/clean-data/clean
+edit_uri: edit/main/docs/
+
+copyright: Copyright &copy; 2024 Clean Team
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+    logo: material/broom
+  palette:
+    - scheme: default
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_source: true
+            show_signature_annotations: true
+            show_root_heading: true
+            show_root_full_path: false
+            merge_init_into_class: true
+            docstring_style: google
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quickstart: getting-started/quickstart.md
+    - Examples: getting-started/examples.md
+  - User Guide:
+    - Overview: guide/overview.md
+    - Label Errors: guide/label-errors.md
+    - Duplicates: guide/duplicates.md
+    - Outliers: guide/outliers.md
+    - Class Imbalance: guide/imbalance.md
+    - Bias Detection: guide/bias.md
+    - Quality Reports: guide/reports.md
+    - Visualization: guide/visualization.md
+    - Streaming: guide/streaming.md
+    - LLM Data Quality: guide/llm-data.md
+  - Guides:
+    - Plugin Migration: guides/plugin-migration.md
+    - Next-Gen Architecture: guides/next-gen-architecture.md
+  - API Reference:
+    - DatasetCleaner: api/cleaner.md
+    - Detectors: api/detectors.md
+    - Reports: api/reports.md
+    - Loaders: api/loaders.md
+    - Visualization: api/visualization.md
+    - Plugin System: api/plugins.md
+    - Auto-Fix Engine: api/fixes.md
+    - Streaming: api/streaming.md
+    - CLI: api/cli.md
+    - REST API: api/rest-api.md
+    - Next-Gen Features:
+      - Data Drift: api/drift.md
+      - Annotation Quality: api/annotation.md
+      - LLM Evaluation: api/llm-eval.md
+      - Synthetic Validation: api/synthetic.md
+      - Compliance Reports: api/compliance.md
+      - Active Learning: api/active-learning.md
+      - Multi-Modal: api/multimodal.md
+      - Distributed: api/distributed.md
+      - Dashboard: api/dashboard.md
+      - CI/CD: api/ci-cd.md
+    - Enterprise Features:
+      - Real-Time Pipeline: api/realtime.md
+      - AutoML Tuning: api/automl.md
+      - Cloud Service: api/cloud.md
+      - Root Cause Analysis: api/root-cause.md
+      - Vector DB: api/vectordb.md
+      - Model-Aware Scoring: api/model-aware.md
+      - Intelligent Sampling: api/intelligent-sampling.md
+      - Slice Discovery: api/slice-discovery.md
+      - Privacy Vault: api/privacy.md
+      - Collaborative Review: api/collaboration.md
+  - Architecture: architecture.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      base_path: ["."]
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/clean-data/clean
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/clean-data-quality/
+  generator: false
+  version:
+    provider: mike
+
+extra_css:
+  - stylesheets/extra.css
+
+watch:
+  - src/clean

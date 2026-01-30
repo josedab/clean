@@ -1,0 +1,41 @@
+/* Custom styles for Clean documentation */
+
+/* Hero section styling */
+.md-typeset h1 {
+    font-weight: 700;
+}
+
+/* Badges */
+.md-typeset .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.md-typeset .badges a {
+    display: inline-block;
+}
+
+/* Feature grid */
+.md-typeset .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.md-typeset .grid > .card {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: var(--md-code-bg-color);
+}
+
+.md-typeset .grid > .card h3 {
+    margin-top: 0;
+}
+
+/* Code annotations */
+.md-annotation__index {
+    font-weight: 700;
+}
