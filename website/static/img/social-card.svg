@@ -1,0 +1,47 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d9488"/>
+      <stop offset="100%" style="stop-color:#0f766e"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Logo broom icon -->
+  <g transform="translate(80, 180)">
+    <!-- Broom handle -->
+    <rect x="94" y="30" width="12" height="90" rx="4" fill="white"/>
+    <!-- Broom head base -->
+    <ellipse cx="100" cy="125" rx="35" ry="12" fill="white"/>
+    <!-- Broom bristles -->
+    <path d="M70 130 L68 165 Q100 175 132 165 L130 130" fill="white"/>
+    <line x1="78" y1="132" x2="76" y2="162" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+    <line x1="88" y1="133" x2="86" y2="168" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+    <line x1="100" y1="134" x2="100" y2="172" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+    <line x1="112" y1="133" x2="114" y2="168" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+    <line x1="122" y1="132" x2="124" y2="162" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+    <!-- Sparkles -->
+    <g fill="white">
+      <path d="M45 55 L48 65 L58 68 L48 71 L45 81 L42 71 L32 68 L42 65 Z" opacity="0.9"/>
+      <path d="M155 45 L157 52 L164 54 L157 56 L155 63 L153 56 L146 54 L153 52 Z" opacity="0.9"/>
+      <path d="M160 85 L162 90 L167 91 L162 93 L160 98 L158 93 L153 91 L158 90 Z" opacity="0.7"/>
+    </g>
+  </g>
+  
+  <!-- Title text -->
+  <text x="320" y="260" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="700">Clean</text>
+  
+  <!-- Tagline -->
+  <text x="320" y="330" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="400" opacity="0.95">AI-powered data quality for ML datasets</text>
+  
+  <!-- Feature highlights -->
+  <text x="320" y="410" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="24" opacity="0.85">🏷️ Label Errors  •  🔍 Duplicates  •  📊 Outliers  •  ⚖️ Bias Detection</text>
+  
+  <!-- Install command box -->
+  <rect x="320" y="460" width="500" height="60" rx="8" fill="rgba(255,255,255,0.15)"/>
+  <text x="340" y="500" fill="white" font-family="monospace" font-size="24" opacity="0.95">pip install clean-data-quality</text>
+  
+  <!-- URL -->
+  <text x="1080" y="590" fill="white" font-family="system-ui, -apple-system, sans-serif" font-size="20" opacity="0.7" text-anchor="end">clean-data.github.io/clean</text>
+</svg>
