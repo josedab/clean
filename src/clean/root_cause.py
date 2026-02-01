@@ -319,10 +319,7 @@ class RootCauseAnalyzer:
             n_total = len(data)
 
             # Metadata typically has low cardinality relative to data size
-            if n_unique < 50 and n_unique < n_total * 0.1:
-                metadata_cols.append(col)
-            # Or contains typical metadata keywords
-            elif any(kw in col.lower() for kw in [
+            if (n_unique < 50 and n_unique < n_total * 0.1) or any(kw in col.lower() for kw in [
                 "annotator", "labeler", "source", "batch", "date",
                 "method", "version", "split", "origin", "type"
             ]):
