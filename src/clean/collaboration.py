@@ -522,7 +522,7 @@ class ReviewSession:
 
     def get_stats(self) -> SessionStats:
         """Get session statistics."""
-        status_counts = {s: 0 for s in ReviewStatus}
+        status_counts = dict.fromkeys(ReviewStatus, 0)
         total_time = 0
         n_reviewed = 0
         agreements = 0
