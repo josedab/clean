@@ -166,7 +166,7 @@ class SyntheticDataValidator:
         self,
         real_data: pd.DataFrame,
         feature_columns: list[str] | None = None,
-    ) -> "SyntheticDataValidator":
+    ) -> SyntheticDataValidator:
         """Set the real/reference data for comparison.
 
         Args:

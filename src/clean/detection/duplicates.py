@@ -70,7 +70,7 @@ class DuplicateDetector(BaseDetector):
 
     def fit(
         self, features: pd.DataFrame | np.ndarray, labels: np.ndarray | None = None
-    ) -> "DuplicateDetector":
+    ) -> DuplicateDetector:
         """Fit the detector by computing hashes and/or embeddings.
 
         Args:

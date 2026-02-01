@@ -187,7 +187,7 @@ class DriftDetector:
         reference: pd.DataFrame,
         labels: np.ndarray | None = None,
         label_column: str | None = None,
-    ) -> "DriftDetector":
+    ) -> DriftDetector:
         """Fit the detector with reference data.
 
         Args:
@@ -598,7 +598,7 @@ class DriftMonitor:
         reference: pd.DataFrame,
         labels: np.ndarray | None = None,
         label_column: str | None = None,
-    ) -> "DriftMonitor":
+    ) -> DriftMonitor:
         """Set the reference data for monitoring.
 
         Args:
@@ -653,7 +653,7 @@ class DriftMonitor:
 
     def add_alert_callback(
         self, callback: Callable[[DriftReport], None]
-    ) -> "DriftMonitor":
+    ) -> DriftMonitor:
         """Add a callback function for drift alerts.
 
         Args:

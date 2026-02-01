@@ -1051,7 +1051,7 @@ class QueryByCommittee:
         self.models = models
         self._fitted = False
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> 'QueryByCommittee':
+    def fit(self, X: np.ndarray, y: np.ndarray) -> QueryByCommittee:
         """Fit all committee members.
 
         Args:
@@ -1144,7 +1144,7 @@ class ExpectedModelChange:
         self._fitted = False
         self._classes = None
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> 'ExpectedModelChange':
+    def fit(self, X: np.ndarray, y: np.ndarray) -> ExpectedModelChange:
         """Fit the model.
 
         Args:
