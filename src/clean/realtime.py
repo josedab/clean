@@ -228,11 +228,11 @@ class KafkaSource(StreamSource):
         """Connect to Kafka."""
         try:
             from aiokafka import AIOKafkaConsumer
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "aiokafka is required for Kafka support. "
                 "Install with: pip install aiokafka"
-            )
+            ) from e
 
         self._consumer = AIOKafkaConsumer(
             self.topic,
@@ -301,11 +301,11 @@ class PulsarSource(StreamSource):
         """Connect to Pulsar."""
         try:
             import pulsar
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "pulsar-client is required for Pulsar support. "
                 "Install with: pip install pulsar-client"
-            )
+            ) from e
 
         self._client = pulsar.Client(self.service_url)
         self._consumer = self._client.subscribe(
@@ -380,11 +380,11 @@ class RedisSource(StreamSource):
         """Connect to Redis."""
         try:
             import redis.asyncio as redis
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "redis is required for Redis Streams support. "
                 "Install with: pip install redis"
-            )
+            ) from e
 
         self._redis = redis.from_url(self.url, **self.kwargs)
 
@@ -841,20 +841,19 @@ class AlertWebhook:
         """Send alert to webhook."""
         try:
             import aiohttp
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "aiohttp is required for webhook support. "
                 "Install with: pip install aiohttp"
-            )
+            ) from e
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                self.url,
-                json=alert.to_dict(),
-                headers=self.headers,
-                timeout=aiohttp.ClientTimeout(total=self.timeout),
-            ) as response:
-                response.raise_for_status()
+        async with aiohttp.ClientSession() as session, session.post(
+            self.url,
+            json=alert.to_dict(),
+            headers=self.headers,
+            timeout=aiohttp.ClientTimeout(total=self.timeout),
+        ) as response:
+            response.raise_for_status()
 
 
 class SlackAlertHandler:
@@ -872,11 +871,11 @@ class SlackAlertHandler:
         """Send alert to Slack."""
         try:
             import aiohttp
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "aiohttp is required for Slack alerts. "
                 "Install with: pip install aiohttp"
-            )
+            ) from e
 
         emoji = {
             AlertSeverity.INFO: ":information_source:",

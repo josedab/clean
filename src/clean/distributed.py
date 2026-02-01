@@ -427,10 +427,10 @@ class SparkCleaner:
                 .getOrCreate()
             )
             return self._spark
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "PySpark not installed. Install with: pip install pyspark"
-            )
+            ) from e
 
     def analyze(
         self,

@@ -500,11 +500,11 @@ class S3StorageBackend(StorageBackend):
         if self._client is None:
             try:
                 import boto3
-            except ImportError:
+            except ImportError as e:
                 raise ImportError(
                     "boto3 is required for S3 storage. "
                     "Install with: pip install boto3"
-                )
+                ) from e
             self._client = boto3.client(
                 "s3",
                 region_name=self.region,

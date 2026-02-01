@@ -384,10 +384,10 @@ class PineconeStore(VectorStore):
         """Connect to Pinecone."""
         try:
             import pinecone
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "pinecone-client is required. Install with: pip install pinecone-client"
-            )
+            ) from e
 
         pinecone.init(api_key=self.api_key, environment=self.environment)
         self._index = pinecone.Index(self.index_name)
@@ -489,10 +489,10 @@ class WeaviateStore(VectorStore):
         """Connect to Weaviate."""
         try:
             import weaviate
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "weaviate-client is required. Install with: pip install weaviate-client"
-            )
+            ) from e
 
         auth = None
         if self.api_key:
@@ -626,10 +626,10 @@ class MilvusStore(VectorStore):
                 connections,
                 utility,
             )
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "pymilvus is required. Install with: pip install pymilvus"
-            )
+            ) from e
 
         connections.connect(host=self.host, port=self.port)
 
@@ -762,10 +762,10 @@ class QdrantStore(VectorStore):
         try:
             from qdrant_client import QdrantClient
             from qdrant_client.models import Distance, VectorParams
-        except ImportError:
+        except ImportError as e:
             raise ImportError(
                 "qdrant-client is required. Install with: pip install qdrant-client"
-            )
+            ) from e
 
         self._client = QdrantClient(
             host=self.host,
