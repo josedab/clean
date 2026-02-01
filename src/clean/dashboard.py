@@ -6,19 +6,17 @@ It uses FastAPI to serve a single-page application with real-time analysis capab
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
 try:
-    from fastapi import FastAPI, HTTPException, UploadFile, File, Query
-    from fastapi.responses import HTMLResponse, JSONResponse
-    from fastapi.middleware.cors import CORSMiddleware
     import uvicorn
+    from fastapi import FastAPI, File, HTTPException, Query, UploadFile
+    from fastapi.middleware.cors import CORSMiddleware
+    from fastapi.responses import HTMLResponse, JSONResponse
 
     FASTAPI_AVAILABLE = True
 except ImportError:

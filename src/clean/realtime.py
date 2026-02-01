@@ -21,9 +21,9 @@ import json
 import time
 from abc import ABC, abstractmethod
 from collections import deque
+from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from enum import Enum
-from collections.abc import AsyncIterator
 from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np

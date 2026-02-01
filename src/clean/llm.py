@@ -28,8 +28,8 @@ import numpy as np
 import pandas as pd
 
 from clean.constants import (
-    DEFAULT_MIN_TEXT_LENGTH,
     DEFAULT_MAX_TEXT_LENGTH,
+    DEFAULT_MIN_TEXT_LENGTH,
     DEFAULT_SIMILARITY_THRESHOLD,
     SHORT_CONTENT_THRESHOLD,
 )

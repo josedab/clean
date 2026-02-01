@@ -618,8 +618,14 @@ class MilvusStore(VectorStore):
     async def connect(self) -> None:
         """Connect to Milvus."""
         try:
-            from pymilvus import Collection, connections, utility
-            from pymilvus import CollectionSchema, FieldSchema, DataType
+            from pymilvus import (
+                Collection,
+                CollectionSchema,
+                DataType,
+                FieldSchema,
+                connections,
+                utility,
+            )
         except ImportError:
             raise ImportError(
                 "pymilvus is required. Install with: pip install pymilvus"
@@ -842,7 +848,7 @@ class QdrantStore(VectorStore):
         if self._client is None:
             raise RuntimeError("Not connected")
 
-        from qdrant_client.models import Filter, FieldCondition, MatchAny
+        from qdrant_client.models import FieldCondition, Filter, MatchAny
 
         self._client.delete(
             collection_name=self.collection_name,
