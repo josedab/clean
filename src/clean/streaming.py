@@ -20,7 +20,7 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 import pandas as pd
 
-from clean.constants import DEFAULT_CHUNK_SIZE, DEFAULT_IQR_MULTIPLIER
+from clean.constants import DEFAULT_IQR_MULTIPLIER
 from clean.core.types import IssueType
 
 if TYPE_CHECKING:

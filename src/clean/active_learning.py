@@ -1041,7 +1041,6 @@ class QueryByCommittee:
             n_models: Number of models if not provided
         """
         if models is None:
-            from sklearn.ensemble import RandomForestClassifier
             from sklearn.tree import DecisionTreeClassifier
 
             models = [
@@ -1179,7 +1178,6 @@ class ExpectedModelChange:
         if not self._fitted:
             raise RuntimeError("Model not fitted. Call fit() first.")
 
-        from sklearn.base import clone
 
         n_total = X.shape[0]
         emc_scores = np.zeros(n_total)
