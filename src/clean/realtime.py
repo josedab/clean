@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import time
 from abc import ABC, abstractmethod
 from collections import deque
@@ -33,6 +34,8 @@ from clean.core.types import IssueType
 
 if TYPE_CHECKING:
     pass
+
+logger = logging.getLogger(__name__)
 
 
 class StreamBackend(Enum):
@@ -394,7 +397,7 @@ class RedisSource(StreamSource):
                 self.stream, self.group, id="0", mkstream=True
             )
         except Exception:
-            pass  # Group already exists
+            logger.debug("Redis consumer group already exists or creation failed")
 
     async def disconnect(self) -> None:
         """Disconnect from Redis."""
@@ -805,7 +808,7 @@ class RealtimePipeline:
                 else:
                     handler(alert)
             except Exception:
-                pass  # Don't let handler errors stop processing
+                logger.debug("Alert handler error", exc_info=True)
 
     def get_metrics(self) -> dict[str, Any]:
         """Get current metrics."""

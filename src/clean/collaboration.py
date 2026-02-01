@@ -17,6 +17,7 @@ Example:
 from __future__ import annotations
 
 import asyncio
+import logging
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -27,6 +28,8 @@ import pandas as pd
 
 if TYPE_CHECKING:
     pass
+
+logger = logging.getLogger(__name__)
 
 
 class ReviewStatus(Enum):
@@ -601,7 +604,7 @@ class ReviewSession:
                 else:
                     handler(event)
             except Exception:
-                pass  # Don't let handler errors break the session
+                logger.debug("Event handler error", exc_info=True)
 
 
 class ReviewWorkspace:

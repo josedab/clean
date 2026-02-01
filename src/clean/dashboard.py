@@ -6,6 +6,7 @@ It uses FastAPI to serve a single-page application with real-time analysis capab
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Any
 
@@ -24,6 +25,7 @@ except ImportError:
 
 from clean.core import DatasetCleaner
 
+logger = logging.getLogger(__name__)
 
 __all__ = [
     "DashboardConfig",
@@ -688,7 +690,7 @@ class DashboardApp:
                     })
 
             except Exception:
-                pass  # Silently handle analysis errors
+                logger.debug("Analysis error during dashboard processing", exc_info=True)
 
         # Calculate total issues and quality score
         result["total_issues"] = sum(result["issue_counts"].values())

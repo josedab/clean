@@ -17,6 +17,7 @@ Example:
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
@@ -25,6 +26,8 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 from scipy.spatial.distance import cdist
+
+logger = logging.getLogger(__name__)
 
 
 class SyntheticIssueType(Enum):
@@ -540,7 +543,7 @@ class SyntheticDataValidator:
                 ))
 
         except Exception:
-            pass
+            logger.debug("Distribution gap detection failed", exc_info=True)
 
         return issues
 

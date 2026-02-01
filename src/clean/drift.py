@@ -17,6 +17,7 @@ Example:
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -25,6 +26,8 @@ from typing import Any, Callable
 import numpy as np
 import pandas as pd
 from scipy import stats
+
+logger = logging.getLogger(__name__)
 
 
 class DriftType(Enum):
@@ -668,7 +671,7 @@ class DriftMonitor:
             try:
                 callback(report)
             except Exception:
-                pass  # Don't let callback errors break monitoring
+                logger.debug("Alert callback error", exc_info=True)
 
     def get_history(self) -> list[DriftReport]:
         """Get drift detection history."""
