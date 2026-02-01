@@ -104,21 +104,21 @@ class ComplianceReport:
 
         lines = [
             f"{'=' * 60}",
-            f"COMPLIANCE ASSESSMENT REPORT",
+            "COMPLIANCE ASSESSMENT REPORT",
             f"{'=' * 60}",
             f"Framework: {self.framework.value.upper().replace('_', ' ')}",
             f"Generated: {self.generated_at.strftime('%Y-%m-%d %H:%M:%S')}",
             f"Dataset: {self.dataset_name}",
             f"Risk Level: {self.risk_level.value.upper()}",
-            f"",
+            "",
             f"Overall Status: {status_emoji.get(self.overall_status, '')} {self.overall_status.value.upper()}",
             f"Compliance Score: {self.overall_score:.1f}/100",
-            f"",
+            "",
             f"{'=' * 60}",
-            f"EXECUTIVE SUMMARY",
+            "EXECUTIVE SUMMARY",
             f"{'=' * 60}",
             self.executive_summary,
-            f"",
+            "",
             f"{'=' * 60}",
             f"REQUIREMENTS ASSESSMENT ({len(self.requirements)} items)",
             f"{'=' * 60}",
@@ -163,23 +163,23 @@ class ComplianceReport:
     def to_markdown(self) -> str:
         """Export report as Markdown."""
         lines = [
-            f"# Compliance Assessment Report",
-            f"",
+            "# Compliance Assessment Report",
+            "",
             f"**Framework:** {self.framework.value.upper().replace('_', ' ')}",
             f"**Generated:** {self.generated_at.strftime('%Y-%m-%d %H:%M:%S')}",
             f"**Dataset:** {self.dataset_name}",
             f"**Risk Level:** {self.risk_level.value}",
             f"**Overall Status:** {self.overall_status.value}",
             f"**Compliance Score:** {self.overall_score:.1f}/100",
-            f"",
-            f"## Executive Summary",
-            f"",
+            "",
+            "## Executive Summary",
+            "",
             self.executive_summary,
-            f"",
-            f"## Requirements Assessment",
-            f"",
-            f"| ID | Requirement | Status | Score |",
-            f"|---|---|---|---|",
+            "",
+            "## Requirements Assessment",
+            "",
+            "| ID | Requirement | Status | Score |",
+            "|---|---|---|---|",
         ]
 
         for req in self.requirements:
@@ -188,9 +188,9 @@ class ComplianceReport:
             )
 
         lines.extend([
-            f"",
-            f"## Detailed Findings",
-            f"",
+            "",
+            "## Detailed Findings",
+            "",
         ])
 
         for req in self.requirements:
@@ -198,11 +198,11 @@ class ComplianceReport:
                 lines.append(f"### {req.requirement_id}: {req.title}")
                 lines.append(f"**Status:** {req.status.value}")
                 if req.findings:
-                    lines.append(f"\n**Findings:**")
+                    lines.append("\n**Findings:**")
                     for finding in req.findings:
                         lines.append(f"- {finding}")
                 if req.recommendations:
-                    lines.append(f"\n**Recommendations:**")
+                    lines.append("\n**Recommendations:**")
                     for rec in req.recommendations:
                         lines.append(f"- {rec}")
                 lines.append("")
@@ -642,12 +642,12 @@ class ComplianceReportGenerator:
 
         summary_parts = [
             f"This report assesses compliance with {framework_name} requirements.",
-            f"",
+            "",
             f"Of {len(requirements)} assessed requirements:",
             f"- {compliant} are fully compliant",
             f"- {partial} are partially compliant",
             f"- {non_compliant} are non-compliant",
-            f"",
+            "",
             f"Overall compliance score: {overall_score:.1f}/100",
         ]
 

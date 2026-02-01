@@ -16,9 +16,10 @@ Example:
 from __future__ import annotations
 
 import logging
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -82,14 +83,14 @@ class DistributedReport:
             f"Total Samples: {self.total_samples:,}",
             f"Total Chunks: {self.total_chunks}",
             f"Processing Time: {self.processing_time_seconds:.1f}s",
-            f"",
-            f"Quality Metrics:",
+            "",
+            "Quality Metrics:",
             f"  Overall Score: {self.overall_quality_score:.1f}/100",
             f"  Label Errors: {self.total_label_errors:,}",
             f"  Duplicates: {self.total_duplicates:,}",
             f"  Outliers: {self.total_outliers:,}",
-            f"",
-            f"Configuration:",
+            "",
+            "Configuration:",
             f"  Workers: {self.config.n_workers}",
             f"  Chunk Size: {self.config.chunk_size:,}",
             f"  Scheduler: {self.config.scheduler}",
