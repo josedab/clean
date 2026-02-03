@@ -93,3 +93,4 @@ Thumbs.db
 *.tmp
 models/
 embeddings_cache/
+.benchmark_results/
