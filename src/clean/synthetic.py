@@ -607,3 +607,468 @@ def validate_synthetic_data(
     validator = SyntheticDataValidator(**kwargs)
     validator.set_reference(real_data)
     return validator.validate(synthetic_data)
+
+
+# =============================================================================
+# Certified Synthetic Data Generation
+# =============================================================================
+
+
+class CertificationStatus(Enum):
+    """Status of quality certification."""
+
+    PASSED = "passed"
+    FAILED = "failed"
+    CONDITIONAL = "conditional"
+
+
+class SynthesizerType(Enum):
+    """Types of synthetic data generators."""
+
+    GAUSSIAN_COPULA = "gaussian_copula"
+    BOOTSTRAP = "bootstrap"
+    SMOTE = "smote"
+
+
+@dataclass
+class CertificationConfig:
+    """Configuration for synthetic data certification."""
+
+    min_quality_score: float = 80.0
+    max_duplicates: float = 0.01
+    max_outliers: float = 0.05
+    max_missing: float = 0.0
+    min_diversity: float = 0.9
+    max_ks_statistic: float = 0.1
+    max_correlation_diff: float = 0.15
+    min_distance_to_original: float = 0.1
+    max_retries: int = 5
+    random_seed: int | None = None
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary."""
+        return {
+            "min_quality_score": self.min_quality_score,
+            "max_duplicates": self.max_duplicates,
+            "max_outliers": self.max_outliers,
+            "max_missing": self.max_missing,
+            "min_diversity": self.min_diversity,
+            "max_ks_statistic": self.max_ks_statistic,
+            "max_correlation_diff": self.max_correlation_diff,
+            "min_distance_to_original": self.min_distance_to_original,
+            "max_retries": self.max_retries,
+        }
+
+
+@dataclass
+class QualityMetric:
+    """A single quality metric with pass/fail status."""
+
+    name: str
+    value: float
+    threshold: float
+    passed: bool
+    description: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary."""
+        return {
+            "name": self.name,
+            "value": self.value,
+            "threshold": self.threshold,
+            "passed": self.passed,
+            "description": self.description,
+        }
+
+
+@dataclass
+class QualityCertificate:
+    """Certificate proving synthetic data quality."""
+
+    certificate_id: str
+    timestamp: str
+    status: CertificationStatus
+    quality_score: float
+    n_samples: int
+    metrics: list[QualityMetric]
+    config: CertificationConfig
+    synthesizer: str
+    reference_hash: str
+    synthetic_hash: str
+    generation_time_seconds: float
+    retries_needed: int = 0
+    warnings: list[str] = field(default_factory=list)
+
+    @property
+    def is_certified(self) -> bool:
+        """Check if data is certified."""
+        return self.status == CertificationStatus.PASSED
+
+    def summary(self) -> str:
+        """Get certificate summary."""
+        lines = [
+            "=" * 60,
+            "SYNTHETIC DATA QUALITY CERTIFICATE",
+            "=" * 60,
+            f"Certificate ID: {self.certificate_id}",
+            f"Timestamp: {self.timestamp}",
+            f"Status: {self.status.value.upper()}",
+            f"Quality Score: {self.quality_score:.1f}/100",
+            f"Samples Generated: {self.n_samples:,}",
+            f"Generation Time: {self.generation_time_seconds:.2f}s",
+            f"Synthesizer: {self.synthesizer}",
+            "-" * 60,
+            "METRICS:",
+        ]
+        for metric in self.metrics:
+            status = "✓" if metric.passed else "✗"
+            lines.append(
+                f"  {status} {metric.name}: {metric.value:.4f} "
+                f"(threshold: {metric.threshold:.4f})"
+            )
+        if self.warnings:
+            lines.append("-" * 60)
+            lines.append("WARNINGS:")
+            for warning in self.warnings:
+                lines.append(f"  ⚠ {warning}")
+        lines.append("=" * 60)
+        return "\n".join(lines)
+
+    def to_dict(self) -> dict[str, Any]:
+        """Convert to dictionary."""
+        return {
+            "certificate_id": self.certificate_id,
+            "timestamp": self.timestamp,
+            "status": self.status.value,
+            "quality_score": self.quality_score,
+            "n_samples": self.n_samples,
+            "metrics": [m.to_dict() for m in self.metrics],
+            "config": self.config.to_dict(),
+            "synthesizer": self.synthesizer,
+            "reference_hash": self.reference_hash,
+            "synthetic_hash": self.synthetic_hash,
+            "generation_time_seconds": self.generation_time_seconds,
+            "retries_needed": self.retries_needed,
+            "warnings": self.warnings,
+        }
+
+
+@dataclass
+class GenerationResult:
+    """Result of certified synthetic data generation."""
+
+    data: pd.DataFrame
+    certificate: QualityCertificate
+    original_n_samples: int
+
+
+class GaussianCopulaSynthesizer:
+    """Gaussian Copula-based synthetic data generator."""
+
+    def __init__(self, random_seed: int | None = None):
+        self.random_seed = random_seed
+        self._fitted = False
+        self._columns: list[str] = []
+        self._numeric_cols: list[str] = []
+        self._categorical_cols: list[str] = []
+        self._means: np.ndarray | None = None
+        self._stds: np.ndarray | None = None
+        self._corr_matrix: np.ndarray | None = None
+        self._category_maps: dict[str, dict[int, Any]] = {}
+        self._category_probs: dict[str, np.ndarray] = {}
+
+    @property
+    def name(self) -> str:
+        return "gaussian_copula"
+
+    def fit(self, data: pd.DataFrame) -> None:
+        """Fit to reference data."""
+        if self.random_seed is not None:
+            np.random.seed(self.random_seed)
+
+        self._columns = list(data.columns)
+        self._numeric_cols = data.select_dtypes(include=[np.number]).columns.tolist()
+        self._categorical_cols = data.select_dtypes(
+            exclude=[np.number]
+        ).columns.tolist()
+
+        if self._numeric_cols:
+            numeric_data = data[self._numeric_cols].fillna(
+                data[self._numeric_cols].mean()
+            )
+            self._means = numeric_data.mean().values
+            self._stds = numeric_data.std().values + 1e-8
+            standardized = (numeric_data - self._means) / self._stds
+            self._corr_matrix = standardized.corr().values
+            min_eig = np.min(np.linalg.eigvalsh(self._corr_matrix))
+            if min_eig < 0:
+                self._corr_matrix -= 1.1 * min_eig * np.eye(len(self._numeric_cols))
+
+        for col in self._categorical_cols:
+            value_counts = data[col].value_counts(normalize=True)
+            self._category_maps[col] = {i: v for i, v in enumerate(value_counts.index)}
+            self._category_probs[col] = value_counts.values
+
+        self._fitted = True
+
+    def sample(self, n_samples: int) -> pd.DataFrame:
+        """Generate synthetic samples."""
+        if not self._fitted:
+            raise RuntimeError("Synthesizer must be fitted first")
+
+        result = pd.DataFrame()
+
+        if self._numeric_cols and self._corr_matrix is not None:
+            try:
+                L = np.linalg.cholesky(self._corr_matrix)
+                z = np.random.randn(n_samples, len(self._numeric_cols))
+                correlated = z @ L.T
+                synthetic_numeric = correlated * self._stds + self._means
+                for i, col in enumerate(self._numeric_cols):
+                    result[col] = synthetic_numeric[:, i]
+            except np.linalg.LinAlgError:
+                for i, col in enumerate(self._numeric_cols):
+                    result[col] = (
+                        np.random.randn(n_samples) * self._stds[i] + self._means[i]
+                    )
+
+        for col in self._categorical_cols:
+            probs = self._category_probs[col]
+            indices = np.random.choice(len(probs), size=n_samples, p=probs)
+            result[col] = [self._category_maps[col][i] for i in indices]
+
+        return result[self._columns]
+
+
+class CertifiedDataGenerator:
+    """Generate certified synthetic data with quality guarantees."""
+
+    def __init__(
+        self,
+        config: CertificationConfig | None = None,
+        synthesizer_type: SynthesizerType = SynthesizerType.GAUSSIAN_COPULA,
+    ):
+        self.config = config or CertificationConfig()
+        self.synthesizer_type = synthesizer_type
+
+    def _compute_hash(self, data: pd.DataFrame) -> str:
+        """Compute hash of dataframe."""
+        import hashlib
+
+        data_str = data.to_csv(index=False)
+        return hashlib.sha256(data_str.encode()).hexdigest()[:16]
+
+    def _validate(
+        self, synthetic: pd.DataFrame, reference: pd.DataFrame
+    ) -> tuple[list[QualityMetric], list[str]]:
+        """Validate synthetic data quality."""
+        metrics = []
+        warnings = []
+
+        # Duplicate rate
+        n_dups = synthetic.duplicated().sum()
+        dup_rate = n_dups / len(synthetic) if len(synthetic) > 0 else 0
+        metrics.append(
+            QualityMetric(
+                name="duplicate_rate",
+                value=dup_rate,
+                threshold=self.config.max_duplicates,
+                passed=dup_rate <= self.config.max_duplicates,
+                description="Rate of duplicate rows",
+            )
+        )
+
+        # Missing rate
+        missing_rate = synthetic.isnull().sum().sum() / synthetic.size
+        metrics.append(
+            QualityMetric(
+                name="missing_rate",
+                value=missing_rate,
+                threshold=self.config.max_missing,
+                passed=missing_rate <= self.config.max_missing,
+                description="Rate of missing values",
+            )
+        )
+
+        # KS statistic
+        numeric_cols = reference.select_dtypes(include=[np.number]).columns
+        if len(numeric_cols) > 0:
+            ks_stats = []
+            for col in numeric_cols:
+                ref_vals = reference[col].dropna()
+                syn_vals = synthetic[col].dropna()
+                if len(ref_vals) > 0 and len(syn_vals) > 0:
+                    ks_stat, _ = stats.ks_2samp(ref_vals, syn_vals)
+                    ks_stats.append(ks_stat)
+            avg_ks = np.mean(ks_stats) if ks_stats else 0
+            metrics.append(
+                QualityMetric(
+                    name="ks_statistic",
+                    value=avg_ks,
+                    threshold=self.config.max_ks_statistic,
+                    passed=avg_ks <= self.config.max_ks_statistic,
+                    description="KS distance from reference",
+                )
+            )
+
+        # Correlation preservation
+        if len(numeric_cols) >= 2:
+            ref_corr = reference[numeric_cols].corr()
+            syn_corr = synthetic[numeric_cols].corr()
+            corr_diff = np.abs(ref_corr - syn_corr).mean().mean()
+            metrics.append(
+                QualityMetric(
+                    name="correlation_diff",
+                    value=corr_diff,
+                    threshold=self.config.max_correlation_diff,
+                    passed=corr_diff <= self.config.max_correlation_diff,
+                    description="Correlation matrix difference",
+                )
+            )
+
+        # Diversity
+        if len(numeric_cols) > 0:
+            ref_std = reference[numeric_cols].std().mean()
+            syn_std = synthetic[numeric_cols].std().mean()
+            diversity = syn_std / ref_std if ref_std > 0 else 1.0
+            metrics.append(
+                QualityMetric(
+                    name="diversity",
+                    value=diversity,
+                    threshold=self.config.min_diversity,
+                    passed=diversity >= self.config.min_diversity,
+                    description="Diversity relative to reference",
+                )
+            )
+
+        return metrics, warnings
+
+    def _calculate_score(self, metrics: list[QualityMetric]) -> float:
+        """Calculate overall quality score."""
+        if not metrics:
+            return 0.0
+
+        weights = {
+            "duplicate_rate": 20,
+            "missing_rate": 15,
+            "ks_statistic": 25,
+            "correlation_diff": 20,
+            "diversity": 20,
+        }
+
+        total_weight = sum(weights.get(m.name, 10) for m in metrics)
+        weighted_score = 0
+
+        for metric in metrics:
+            weight = weights.get(metric.name, 10)
+            if metric.passed:
+                weighted_score += weight * 100
+            else:
+                ratio = max(0, 1 - abs(metric.value - metric.threshold) / max(metric.threshold, 0.01))
+                weighted_score += weight * ratio * 100
+
+        return weighted_score / total_weight if total_weight > 0 else 0.0
+
+    def generate(
+        self,
+        reference_data: pd.DataFrame,
+        n_samples: int | None = None,
+    ) -> GenerationResult:
+        """Generate certified synthetic data.
+
+        Args:
+            reference_data: Reference dataset to learn from
+            n_samples: Number of samples to generate
+
+        Returns:
+            GenerationResult with certified synthetic data
+        """
+        import secrets
+        import time
+        from datetime import datetime
+
+        start_time = time.time()
+        n_samples = n_samples or len(reference_data)
+
+        logger.info("Generating %d certified synthetic samples", n_samples)
+
+        synthesizer = GaussianCopulaSynthesizer(random_seed=self.config.random_seed)
+        synthesizer.fit(reference_data)
+
+        best_result = None
+        best_score = -1
+        retries = 0
+
+        for attempt in range(self.config.max_retries):
+            synthetic_data = synthesizer.sample(n_samples)
+            metrics, warnings = self._validate(synthetic_data, reference_data)
+            score = self._calculate_score(metrics)
+
+            logger.info("Attempt %d: Quality score %.1f", attempt + 1, score)
+
+            if score > best_score:
+                best_score = score
+                best_result = (synthetic_data, metrics, warnings)
+                retries = attempt
+
+            if score >= self.config.min_quality_score:
+                if all(m.passed for m in metrics):
+                    break
+
+        synthetic_data, metrics, warnings = best_result  # type: ignore
+
+        all_passed = all(m.passed for m in metrics)
+        if best_score >= self.config.min_quality_score and all_passed:
+            status = CertificationStatus.PASSED
+        elif best_score >= self.config.min_quality_score * 0.9:
+            status = CertificationStatus.CONDITIONAL
+        else:
+            status = CertificationStatus.FAILED
+
+        certificate = QualityCertificate(
+            certificate_id=secrets.token_hex(8),
+            timestamp=datetime.now().isoformat(),
+            status=status,
+            quality_score=best_score,
+            n_samples=n_samples,
+            metrics=metrics,
+            config=self.config,
+            synthesizer=synthesizer.name,
+            reference_hash=self._compute_hash(reference_data),
+            synthetic_hash=self._compute_hash(synthetic_data),
+            generation_time_seconds=time.time() - start_time,
+            retries_needed=retries,
+            warnings=warnings,
+        )
+
+        return GenerationResult(
+            data=synthetic_data,
+            certificate=certificate,
+            original_n_samples=len(reference_data),
+        )
+
+
+def generate_certified_data(
+    reference_data: pd.DataFrame,
+    n_samples: int | None = None,
+    min_quality_score: float = 80.0,
+) -> GenerationResult:
+    """Generate certified synthetic data with quality guarantees.
+
+    Args:
+        reference_data: Reference dataset to learn from
+        n_samples: Number of samples to generate
+        min_quality_score: Minimum required quality score (0-100)
+
+    Returns:
+        GenerationResult with certified data and quality certificate
+
+    Example:
+        >>> result = generate_certified_data(df, n_samples=10000)
+        >>> print(result.certificate.summary())
+        >>> print(f"Certified: {result.certificate.is_certified}")
+        >>> synthetic_df = result.data
+    """
+    config = CertificationConfig(min_quality_score=min_quality_score)
+    generator = CertifiedDataGenerator(config=config)
+    return generator.generate(reference_data, n_samples)
