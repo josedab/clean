@@ -1172,3 +1172,215 @@ __all__.extend([
     "compare_detectors",
     "run_benchmark",
 ])
+
+# =============================================================================
+# Next-Gen Features (2025)
+# =============================================================================
+
+# Quality Prediction Model
+from clean.quality_predictor import (
+    FeatureExtractor,
+    PredictorConfig,
+    QualityGate,
+    QualityPrediction,
+    QualityPredictor,
+    predict_quality,
+)
+
+__all__.extend([
+    "QualityPredictor",
+    "QualityPrediction",
+    "FeatureExtractor",
+    "PredictorConfig",
+    "QualityGate",
+    "predict_quality",
+])
+
+# Natural Language Query Interface
+from clean.nl_query import (
+    NLQueryEngine,
+    QueryIntent as NLQueryIntent,
+    QueryResult as NLQueryResult,
+    create_query_engine,
+    query_report,
+)
+
+__all__.extend([
+    "NLQueryEngine",
+    "NLQueryIntent",
+    "NLQueryResult",
+    "create_query_engine",
+    "query_report",
+])
+
+# Quality-Aware Data Augmentation
+from clean.quality_augmentation import (
+    AugmentationConfig,
+    AugmentationMethod,
+    AugmentationResult,
+    GapType,
+    QualityAwareAugmenter,
+    QualityGap,
+    augment_for_quality,
+)
+
+__all__.extend([
+    "QualityAwareAugmenter",
+    "AugmentationConfig",
+    "AugmentationResult",
+    "AugmentationMethod",
+    "GapType",
+    "QualityGap",
+    "augment_for_quality",
+])
+
+# Cross-Dataset Contamination Detector
+from clean.contamination import (
+    ContaminationConfig,
+    ContaminationDetector,
+    ContaminationReport,
+    ContaminationType,
+    SeverityLevel as ContaminationSeverity,
+    detect_contamination,
+)
+
+__all__.extend([
+    "ContaminationDetector",
+    "ContaminationReport",
+    "ContaminationType",
+    "ContaminationConfig",
+    "ContaminationSeverity",
+    "detect_contamination",
+])
+
+# Curriculum Learning Optimizer
+from clean.curriculum import (
+    CurriculumConfig,
+    CurriculumDataLoader,
+    CurriculumOptimizer,
+    CurriculumSchedule,
+    CurriculumStrategy,
+    create_curriculum,
+)
+
+__all__.extend([
+    "CurriculumOptimizer",
+    "CurriculumSchedule",
+    "CurriculumConfig",
+    "CurriculumStrategy",
+    "CurriculumDataLoader",
+    "create_curriculum",
+])
+
+# Quality Regression Testing
+from clean.quality_regression import (
+    QualityHistoryStore,
+    QualityRegressionTester,
+    QualitySnapshot,
+    QualityTestResult,
+    RegressionSeverity,
+    RegressionTestConfig,
+    run_quality_test,
+    QualityGate as RegressionQualityGate,
+)
+
+__all__.extend([
+    "QualityRegressionTester",
+    "QualityTestResult",
+    "QualitySnapshot",
+    "RegressionSeverity",
+    "RegressionTestConfig",
+    "QualityHistoryStore",
+    "RegressionQualityGate",
+    "run_quality_test",
+])
+
+# Embedding Space Visualizer
+from clean.embedding_viz import (
+    EmbeddingVisualizer,
+    ReductionMethod,
+    VisualizationConfig,
+    VisualizationResult,
+    visualize_embeddings,
+)
+
+__all__.extend([
+    "EmbeddingVisualizer",
+    "VisualizationConfig",
+    "VisualizationResult",
+    "ReductionMethod",
+    "visualize_embeddings",
+])
+
+# Synthetic Data Quality Certification
+from clean.synthetic_certification import (
+    CertificationConfig,
+    CertificationStatus,
+    DimensionScore,
+    QualityCertificate,
+    QualityDimension,
+    SyntheticCertifier,
+    certify_synthetic_data,
+)
+
+__all__.extend([
+    "SyntheticCertifier",
+    "QualityCertificate",
+    "DimensionScore",
+    "CertificationConfig",
+    "CertificationStatus",
+    "QualityDimension",
+    "certify_synthetic_data",
+])
+
+# Multi-Organization Data Marketplace
+from clean.marketplace import (
+    AnonymizedBenchmark,
+    DataType as MarketplaceDataType,
+    Domain,
+    IndustryBenchmark,
+    PercentileResult,
+    PrivacyLevel as MarketplacePrivacyLevel,
+    QualityMarketplace,
+    create_marketplace,
+    get_industry_percentile,
+)
+
+__all__.extend([
+    "QualityMarketplace",
+    "IndustryBenchmark",
+    "AnonymizedBenchmark",
+    "Domain",
+    "MarketplaceDataType",
+    "MarketplacePrivacyLevel",
+    "PercentileResult",
+    "create_marketplace",
+    "get_industry_percentile",
+])
+
+# Automated Labeler Performance Scoring
+from clean.labeler_scoring import (
+    ExpertiseLevel,
+    LabelerEvaluator,
+    LabelerMetrics,
+    LabelerRecommendation,
+    LabelerReport,
+    PerformanceStatus,
+    SmartRouter,
+    TaskAssignment,
+    evaluate_labelers,
+    get_labeler_report,
+)
+
+__all__.extend([
+    "LabelerEvaluator",
+    "LabelerMetrics",
+    "LabelerReport",
+    "LabelerRecommendation",
+    "ExpertiseLevel",
+    "PerformanceStatus",
+    "SmartRouter",
+    "TaskAssignment",
+    "evaluate_labelers",
+    "get_labeler_report",
+])
